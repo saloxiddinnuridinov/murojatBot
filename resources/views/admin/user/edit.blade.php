@@ -55,7 +55,13 @@
                                             <!-- Role Field -->
                                             <div class="form-group col-sm-6">
                                                 {!! Form::label('role', 'Role:') !!}
-                                                {!! Form::select('role', ['admin' => 'admin', 'user' => 'user'], null, ['class' => 'form-control custom-select']) !!}
+                                                {!! Form::select('role', ['admin' => 'admin', 'user' => 'user'], $user->role, ['class' => 'form-control custom-select']) !!}
+                                            </div>
+
+                                            <!-- Role Field -->
+                                            <div class="form-group col-sm-6">
+                                                {!! Form::label('specialist', 'Specialist:') !!}
+                                                {!! Form::select('specialist', ['All' => 'All', 'Sirtqi' => 'Sirtqi', 'Masofaviy' => 'Masofaviy', 'Kunduzgi' => 'Kunduzgi'], $user->specialist, ['class' => 'form-control custom-select']) !!}
                                             </div>
 
                                             <!-- Is Active Field -->
