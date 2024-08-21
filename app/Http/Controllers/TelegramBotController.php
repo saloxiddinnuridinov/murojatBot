@@ -171,7 +171,7 @@ class TelegramBotController extends Controller
             ]);
             // Send a message to the group
             $groupId = '-1002173977211'; // Group ID
-            $this->sendMessageToGroup($groupId, "Yangi xabar: $messageText");
+            $this->sendMessageToGroup($groupId, "$message->type rolidagi Adminlarga. Yangi xabar: $messageText");
         }
     }
     protected function sendMessageToGroup($groupId, $text, $replyMarkup = null)
