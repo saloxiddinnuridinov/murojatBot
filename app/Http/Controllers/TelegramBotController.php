@@ -153,6 +153,7 @@ class TelegramBotController extends Controller
             $user->last_inquiry_type = $messageText;
             $user->update();
             $this->sendTextMessage($chatId, "Murojaatingizni yozing.");
+
         } else {
             // Save the user's message with the selected type
             $message = new Message();
