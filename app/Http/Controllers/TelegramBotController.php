@@ -159,7 +159,7 @@ class TelegramBotController extends Controller
             $message->telegram_user_id = $user->id;
             $message->telegram_message_id = $telegram_message_id;
             $message->message = $messageText;
-            $message->type = $user->last_inquiry_type ?? null;
+            $message->type = $user->last_inquiry_type ?? 'All';
             $message->save();
 
             $this->sendTextMessage($chatId, "Mutaxasislarimiz Ish vaqtida Sizga a'loqaga chiqishadi.", [
