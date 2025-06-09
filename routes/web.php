@@ -30,7 +30,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/messages', [\App\Http\Controllers\AdminController::class, 'index'])->name('admin.messages.index');
     Route::get('/admin/answers', [\App\Http\Controllers\AdminController::class, 'getAnswers'])->name('admin.messages.answers');
     Route::get('/admin/answer/{message_id}', [\App\Http\Controllers\AdminController::class, 'show'])->name('admin.answer');
-    Route::post('/admin/messages/{id}/reply', [\App\Http\Controllers\AdminController::class, 'reply'])->name('admin.messages.reply');
+//    Route::post('/admin/messages/{id}/reply', [\App\Http\Controllers\AdminController::class, 'reply'])->name('admin.messages.reply');
+    Route::post('/admin/messages/reply', [\App\Http\Controllers\AdminController::class, 'reply'])->name('admin.messages.reply');
     Route::get('logout', function () {
         \Illuminate\Support\Facades\Auth::logout();
         return redirect()->route("login");

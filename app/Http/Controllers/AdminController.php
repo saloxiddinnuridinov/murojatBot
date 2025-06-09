@@ -49,9 +49,9 @@ class AdminController extends Controller
         // Paginate messages
         $perPage = 10; // Set the number of items per page
         if ( $user->specialist == 'All') {
-            $messages = $query->where('answered', 0)->latest()->paginate($perPage);
+            $messages = $query->latest()->paginate($perPage);
         }else {
-            $messages = $query->where('answered', 0)->where('type', $user->specialist)->latest()->paginate($perPage);
+            $messages = $query->where('type', $user->specialist)->latest()->paginate($perPage);
         }
 
         // Group paginated messages by telegram_user_id
