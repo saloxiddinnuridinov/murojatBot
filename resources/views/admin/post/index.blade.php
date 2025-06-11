@@ -95,11 +95,10 @@
                                         <td>{{ $firstMessage->telegramUser->username }}</td>
                                         <td>
                                             <ul>
-                                                @foreach ($userMessages as $message)
-                                                    <li>{{ $message->message }}
-                                                        ({{ $message->created_at->format('Y-m-d H:i') }})
-                                                    </li>
-                                                @endforeach
+                                                <li>
+                                                    {{ $userMessages->first()->message }}
+                                                    ({{ $userMessages->first()->created_at->format('Y-m-d H:i') }})
+                                                </li>
                                             </ul>
                                         </td>
                                         <td>
@@ -147,11 +146,13 @@
                                                                             onchange="updateMessageId({{ $firstMessage->id }})"
                                                                             required>
                                                                         @foreach ($userMessages as $message)
-                                                                            <option value="{{ $message->id }}">
-                                                                                {{ $message->message }}
-                                                                                ({{ $message->created_at->format('Y-m-d H:i') }}
-                                                                                )
-                                                                            </option>
+                                                                            @if($message->answered == 0)
+                                                                                <option value="{{ $message->id }}">
+                                                                                    {{ $message->message }}
+                                                                                    ({{ $message->created_at->format('Y-m-d H:i') }}
+                                                                                    )
+                                                                                </option>
+                                                                            @endif
                                                                         @endforeach
                                                                     </select>
                                                                 </div>
@@ -175,7 +176,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <a href="{{ route('admin.answer', [$message->id]) }}"
+                                            <a href="{{ route('admin.answer', [$message->telegram_user_id]) }}"
                                                class="btn btn-primary">
                                                 <i class="fa fa-eye"></i>
                                             </a>

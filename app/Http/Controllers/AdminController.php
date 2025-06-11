@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Helpers\TelegramManager;
 use App\Models\Answer;
+use App\Models\Message;
 use App\Models\TelegramUser;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\Message;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -48,9 +48,9 @@ class AdminController extends Controller
 
         // Paginate messages
         $perPage = 10; // Set the number of items per page
-        if ( $user->specialist == 'All') {
+        if ($user->specialist == 'All') {
             $messages = $query->latest()->paginate($perPage);
-        }else {
+        } else {
             $messages = $query->where('type', $user->specialist)->latest()->paginate($perPage);
         }
 
@@ -59,7 +59,6 @@ class AdminController extends Controller
 
         // Replace the paginated items with the grouped messages
         $messages->setCollection(collect($groupedMessages));
-
         return view('admin.post.index', compact('messages'));
     }
 
@@ -103,23 +102,86 @@ class AdminController extends Controller
         $message = Message::findOrFail($validated['selected_message']);
         $replyText = $validated['reply'];
 
-        // Send the reply as a reply to the original message
-        app(TelegramBotController::class)->replyToUser($message->telegramUser->telegram_id, $replyText, $message->telegram_message_id);
+        try {
+            // Javob yuboriladi
+            app(TelegramBotController::class)->replyToUser(
+                $message->telegramUser->telegram_id,
+                $replyText,
+                $message->telegram_message_id
+            );
 
-        $message->answered = 1;
-        $message->update();
+            // Javob berildi deb belgilaymiz
+            $message->answered = 1;
+            $message->update();
 
-        $answer = new Answer();
-        $answer->user_id = Auth::user()->id;
-        $answer->message_id = $message->id;
-        $answer->answer = $replyText;
-        $answer->save();
+            $answer = new Answer();
+            $answer->user_id = Auth::user()->id;
+            $answer->message_id = $message->id;
+            $answer->answer = $replyText;
+            $answer->save();
 
-        $t_user = TelegramUser::where('id', $message->telegram_user_id)->first();
-        $text = "Savol: $message->message " . " Ism: " . $t_user->name . ' ' . $t_user->surname. " Javob: $answer->answer Admin: " . Auth::user()->name . ' ' . Auth::user()->surname;
-        TelegramManager::sendTelegram($text);
-        return redirect()->route('admin.messages.index')->with('success', 'Reply sent successfully.');
+            $t_user = TelegramUser::where('id', $message->telegram_user_id)->first();
+            $text = "Savol: $message->message " . " Ism: " . $t_user->name . ' ' . $t_user->surname . " Javob: $answer->answer Admin: " . Auth::user()->name . ' ' . Auth::user()->surname;
+            TelegramManager::sendTelegram($text);
+
+            return redirect()->route('admin.messages.index')->with('success', 'Javob muvaffaqiyatli yuborildi.');
+
+        } catch (\Telegram\Bot\Exceptions\TelegramResponseException $e) {
+            // Agar foydalanuvchi botni bloklagan yoki chatni o‘chirgan bo‘lsa
+            if (str_contains($e->getMessage(), 'message to be replied not found') ||
+                str_contains($e->getMessage(), 'bot was blocked by the user') ||
+                str_contains($e->getMessage(), 'Forbidden')
+            ) {
+                // Foydalanuvchi va u bilan bog‘liq ma'lumotlarni o‘chirish
+                $user = $message->telegramUser;
+                if ($user) {
+
+                    $messageIds = Message::where('telegram_user_id', $user->id)->pluck('id');
+                    Answer::whereIn('message_id', $messageIds)->delete();
+
+                    // 3. Keyin barcha messagesni o‘chiramiz
+                    Message::whereIn('id', $messageIds)->delete();
+
+                    // 3. Foydalanuvchini o‘chirish
+                    $user->delete();
+
+                }
+
+                return redirect()->route('admin.messages.index')->with('error', 'Bu Telegram foydalanuvchisi chatni o‘chirgan yoki botni bloklagan. Maʼlumotlar o‘chirildi.');
+            }
+
+            throw $e; // Boshqa xatoliklar bo‘lsa, uni chiqaramiz
+        }
     }
+
+
+//    public function reply(Request $request)
+//    {
+//        $validated = $request->validate([
+//            'selected_message' => 'required|exists:messages,id',
+//            'reply' => 'required|string',
+//        ]);
+//
+//        $message = Message::findOrFail($validated['selected_message']);
+//        $replyText = $validated['reply'];
+//
+//        // Send the reply as a reply to the original message
+//        app(TelegramBotController::class)->replyToUser($message->telegramUser->telegram_id, $replyText, $message->telegram_message_id);
+//
+//        $message->answered = 1;
+//        $message->update();
+//
+//        $answer = new Answer();
+//        $answer->user_id = Auth::user()->id;
+//        $answer->message_id = $message->id;
+//        $answer->answer = $replyText;
+//        $answer->save();
+//
+//        $t_user = TelegramUser::where('id', $message->telegram_user_id)->first();
+//        $text = "Savol: $message->message " . " Ism: " . $t_user->name . ' ' . $t_user->surname. " Javob: $answer->answer Admin: " . Auth::user()->name . ' ' . Auth::user()->surname;
+//        TelegramManager::sendTelegram($text);
+//        return redirect()->route('admin.messages.index')->with('success', 'Reply sent successfully.');
+//    }
 
 
 }
