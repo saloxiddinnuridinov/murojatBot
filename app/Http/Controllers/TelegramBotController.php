@@ -82,7 +82,7 @@ class TelegramBotController extends Controller
                 'keyboard' => [
                     [['text' => 'Sirtqi']],
                     [['text' => 'Masofaviy']],
-                    [['text' => 'Kunduzgi']],
+                    [['text' => 'Umumiy']],
                 ],
                 'resize_keyboard' => true,
                 'one_time_keyboard' => true,
@@ -101,7 +101,7 @@ class TelegramBotController extends Controller
                 'keyboard' => [
                     [['text' => 'Sirtqi']],
                     [['text' => 'Masofaviy']],
-                    [['text' => 'Kunduzgi']],
+                    [['text' => 'Umumiy']],
                 ],
                 'resize_keyboard' => true,
                 'one_time_keyboard' => true,
@@ -112,7 +112,7 @@ class TelegramBotController extends Controller
                 'keyboard' => [
                     [['text' => 'Sirtqi']],
                     [['text' => 'Masofaviy']],
-                    [['text' => 'Kunduzgi']],
+                    [['text' => 'Umumiy']],
                 ],
                 'resize_keyboard' => true,
                 'one_time_keyboard' => true,
