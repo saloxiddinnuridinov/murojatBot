@@ -43,7 +43,7 @@ class TelegramBotController extends Controller
                 $this->welcomeUser($chatId, $name, $lastname, $username);
             } elseif (isset($update['message']['contact'])) {
                 $this->savePhoneNumber($chatId, $update['message']['contact']['phone_number']);
-            } elseif ($text == '↩️Orqaga'){
+            } elseif ($text == '↩️Orqaga|Back'){
                 $this->welcomeUser($chatId, $name, $lastname, $username);
                 $user = TelegramUser::where('telegram_id', $chatId)->first();
                 $user->last_inquiry_type = null;
@@ -80,9 +80,9 @@ class TelegramBotController extends Controller
         } else {
             $this->sendTextMessage($chatId, "Murojaat turini tanlang: 👇👇", [
                 'keyboard' => [
-                    [['text' => 'Sirtqi']],
-                    [['text' => 'Masofaviy']],
-                    [['text' => 'Umumiy']],
+                    [['text' => 'Sirtqi (Bachelor, part time)']],
+                    [['text' => 'Masofaviy (Bachelor, Distance learning)']],
+                    [['text' => 'Kunduzgi (Bachelor, full time)']],
                 ],
                 'resize_keyboard' => true,
                 'one_time_keyboard' => true,
@@ -99,9 +99,9 @@ class TelegramBotController extends Controller
             // Prompt for selecting inquiry type
             $this->sendTextMessage($chatId, "Murojaat turini tanlang: 👇👇", [
                 'keyboard' => [
-                    [['text' => 'Sirtqi']],
-                    [['text' => 'Masofaviy']],
-                    [['text' => 'Umumiy']],
+                    [['text' => 'Sirtqi (Bachelor, part time)']],
+                    [['text' => 'Masofaviy (Bachelor, Distance learning)']],
+                    [['text' => 'Kunduzgi (Bachelor, full time)']],
                 ],
                 'resize_keyboard' => true,
                 'one_time_keyboard' => true,
@@ -110,9 +110,9 @@ class TelegramBotController extends Controller
             $this->sendTextMessage($chatId, "Siz Telefon raqamini yuborgansiz. Xizmatdan foydalanishingiz mumkin.");
             $this->sendTextMessage($chatId, "Murojaat turini tanlang: 👇👇", [
                 'keyboard' => [
-                    [['text' => 'Sirtqi']],
-                    [['text' => 'Masofaviy']],
-                    [['text' => 'Umumiy']],
+                    [['text' => 'Sirtqi (Bachelor, part time)']],
+                    [['text' => 'Masofaviy (Bachelor, Distance learning)']],
+                    [['text' => 'Kunduzgi (Bachelor, full time)']],
                 ],
                 'resize_keyboard' => true,
                 'one_time_keyboard' => true,
@@ -137,9 +137,9 @@ class TelegramBotController extends Controller
                 $user->save();
                 $this->sendTextMessage($chatId, "Telefon raqamingiz saqlandi. Murojaat turini tanlang:", [
                     'keyboard' => [
-                        [['text' => 'Sirtqi']],
-                        [['text' => 'Masofaviy']],
-                        [['text' => 'Umumiy']],
+                        [['text' => 'Sirtqi (Bachelor, part time)']],
+                        [['text' => 'Masofaviy (Bachelor, Distance learning)']],
+                        [['text' => 'Kunduzgi (Bachelor, full time)']],
                     ],
                     'resize_keyboard' => true,
                     'one_time_keyboard' => true,
@@ -165,7 +165,7 @@ class TelegramBotController extends Controller
 
             $this->sendTextMessage($chatId, "Mutaxasislarimiz Ish vaqtida Sizga a'loqaga chiqishadi.", [
                 'keyboard' => [
-                    [['text' => '↩️Orqaga']],
+                    [['text' => '↩️Orqaga|Back']],
                 ],
                 'resize_keyboard' => true,
                 'one_time_keyboard' => true,
